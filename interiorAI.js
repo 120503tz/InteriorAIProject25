@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-// Pages
 const Home = () => (
   <div className="p-8">
     <h1 className="text-4xl font-bold mb-4">Interior AI</h1>
@@ -17,14 +16,98 @@ const Home = () => (
   </div>
 );
 
-const LayoutTool = () => <div className="p-8">[Room Layout Tool placeholder]</div>;
+const LayoutTool = () => {
+  const [boxes, setBoxes] = useState([]);
+
+  const addBox = () => {
+    const newBox = {
+      id: boxes.length + 1,
+      x: Math.random() * 300,
+      y: Math.random() * 200,
+    };
+    setBoxes([...boxes, newBox]);
+  };
+
+  return (
+    <div className="p-8">
+      <h2 className="text-2xl font-semibold mb-4">Room Layout Tool</h2>
+      <button
+        onClick={addBox}
+        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded"
+      >
+        Add Furniture Box
+      </button>
+      <div
+        className="relative w-full h-[400px] border border-gray-400 bg-gray-50"
+        style={{ position: "relative" }}
+      >
+        {boxes.map((box) => (
+          <div
+            key={box.id}
+            className="absolute w-16 h-16 bg-blue-300 border border-black flex items-center justify-center"
+            style={{ left: box.x, top: box.y }}
+          >
+            Box {box.id}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const AIRecommendations = () => {
+  const [roomType, setRoomType] = useState("");
+  const [stylePreference, setStylePreference] = useState("");
+  const [recommendation, setRecommendation] = useState("");
+
+  const generateRecommendation = () => {
+    const output = `For a ${roomType.toLowerCase()} with a ${stylePreference.toLowerCase()} style, we suggest minimal furniture, soft lighting, and neutral colors with pops of accent decor.`;
+    setRecommendation(output);
+  };
+
+  return (
+    <div className="p-8">
+      <h2 className="text-2xl font-semibold mb-4">AI Recommendations</h2>
+      <div className="mb-4">
+        <label className="block mb-1">Room Type</label>
+        <input
+          type="text"
+          className="border border-gray-400 rounded w-full px-3 py-2"
+          value={roomType}
+          onChange={(e) => setRoomType(e.target.value)}
+          placeholder="e.g., Bedroom, Living Room"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block mb-1">Style Preference</label>
+        <input
+          type="text"
+          className="border border-gray-400 rounded w-full px-3 py-2"
+          value={stylePreference}
+          onChange={(e) => setStylePreference(e.target.value)}
+          placeholder="e.g., Modern, Bohemian"
+        />
+      </div>
+      <button
+        onClick={generateRecommendation}
+        className="px-4 py-2 bg-green-600 text-white rounded"
+      >
+        Generate Suggestion
+      </button>
+      {recommendation && (
+        <div className="mt-6 p-4 bg-green-100 border border-green-400 rounded">
+          <strong>Suggestion:</strong> {recommendation}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Visualization = () => <div className="p-8">[3D Visualization placeholder]</div>;
-const AIRecommendations = () => <div className="p-8">[AI Suggestions placeholder]</div>;
 const BudgetPlanner = () => <div className="p-8">[Budget Planner placeholder]</div>;
 const MaterialCatalog = () => <div className="p-8">[Material Catalog placeholder]</div>;
 const SaveShare = () => <div className="p-8">[Save & Share placeholder]</div>;
 
-// App Component
 const App = () => (
   <Router>
     <nav className="bg-gray-800 text-white p-4">
@@ -51,3 +134,4 @@ const App = () => (
 );
 
 export default App;
+
