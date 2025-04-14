@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Draggable from "react-draggable";
 
 const Home = () => (
   <div className="p-8">
@@ -16,14 +17,18 @@ const Home = () => (
   </div>
 );
 
+const furnitureOptions = ["Bed", "Sofa", "Desk", "Chair", "Table"];
+
 const LayoutTool = () => {
   const [boxes, setBoxes] = useState([]);
+  const [selectedFurniture, setSelectedFurniture] = useState("Bed");
 
   const addBox = () => {
     const newBox = {
       id: boxes.length + 1,
-      x: Math.random() * 300,
-      y: Math.random() * 200,
+      type: selectedFurniture,
+      x: 50,
+      y: 50,
     };
     setBoxes([...boxes, newBox]);
   };
@@ -31,32 +36,96 @@ const LayoutTool = () => {
   return (
     <div className="p-8">
       <h2 className="text-2xl font-semibold mb-4">Room Layout Tool</h2>
-      <button
-        onClick={addBox}
-        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded"
-      >
-        Add Furniture Box
-      </button>
-      <div
-        className="relative w-full h-[400px] border border-gray-400 bg-gray-50"
-        style={{ position: "relative" }}
-      >
+
+      <div className="mb-4 flex gap-4 items-center">
+        <select
+          className="border px-3 py-2 rounded"
+          value={selectedFurniture}
+          onChange={(e) => setSelectedFurniture(e.target.value)}
+        >
+          {furnitureOptions.map((item) => (
+            <option key={item} value={item}>{item}</option>
+          ))}
+        </select>
+        <button
+          onClick={addBox}
+          className="px-4 py-2 bg-blue-600 text-white rounded"
+        >
+          Add to Room
+        </button>
+      </div>
+
+      <div className="relative w-full h-[500px] border border-gray-400 bg-gray-50">
         {boxes.map((box) => (
-          <div
-            key={box.id}
-            className="absolute w-16 h-16 bg-blue-300 border border-black flex items-center justify-center"
-            style={{ left: box.x, top: box.y }}
-          >
-            Box {box.id}
-          </div>
+          <Draggable key={box.id} defaultPosition={{ x: box.x, y: box.y }}>
+            <div
+              className="w-20 h-20 bg-blue-200 border border-black rounded-md text-sm flex items-center justify-center cursor-move"
+              title="Drag to move"
+            >
+              {box.type}
+            </div>
+          </Draggable>
         ))}
       </div>
     </div>
   );
 };
 
+const AIRecommendations = () => {
+  const [roomType, setRoomType] = useState("");
+  const [stylePreference, setStylePreference] = useState("");
+  const [recommendation, setRecommendation] = useState("");
+
+  const generateRecommendation = () => {
+    const output = `For a ${roomType.toLowerCase()} with a ${stylePreference.toLowerCase()} style, we suggest minimal furniture, soft lighting, and neutral colors with pops of accent decor.`;
+    setRecommendation(output);
+  };
+
+  return (
+    <div className="p-8">
+      <h2 className="text-2xl font-semibold mb-4">AI Recommendations</h2>
+      <div className="mb-4">
+        <label className="block mb-1">Room Type</label>
+        <select
+          className="border border-gray-400 rounded w-full px-3 py-2"
+          value={roomType}
+          onChange={(e) => setRoomType(e.target.value)}
+        >
+          <option value="">Select a room</option>
+          <option value="Bedroom">Bedroom</option>
+          <option value="Living Room">Living Room</option>
+          <option value="Kitchen">Kitchen</option>
+        </select>
+      </div>
+      <div className="mb-4">
+        <label className="block mb-1">Style Preference</label>
+        <select
+          className="border border-gray-400 rounded w-full px-3 py-2"
+          value={stylePreference}
+          onChange={(e) => setStylePreference(e.target.value)}
+        >
+          <option value="">Select a style</option>
+          <option value="Modern">Modern</option>
+          <option value="Bohemian">Bohemian</option>
+          <option value="Minimalist">Minimalist</option>
+        </select>
+      </div>
+      <button
+        onClick={generateRecommendation}
+        className="px-4 py-2 bg-green-600 text-white rounded"
+      >
+        Generate Suggestion
+      </button>
+      {recommendation && (
+        <div className="mt-6 p-4 bg-green-100 border border-green-400 rounded">
+          <strong>Suggestion:</strong> {recommendation}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Visualization = () => <div className="p-8">[3D Visualization placeholder]</div>;
-const AIRecommendations = () => <div className="p-8">[AI Suggestions placeholder]</div>;
 const BudgetPlanner = () => <div className="p-8">[Budget Planner placeholder]</div>;
 const MaterialCatalog = () => <div className="p-8">[Material Catalog placeholder]</div>;
 const SaveShare = () => <div className="p-8">[Save & Share placeholder]</div>;
